@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSession } from 'auth-astro/server';
+
+const session = await getSession(Astro.request);
+
+if (!session) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout>
+	<main>
+    <header>
+			<h1>Mini URL </h1>
+
+			<button id="logout">Cerrar sesión</button>
+		</header>
+
+		{
+			session ? (
+				<p>Bienvenido {session.user?.name}</p>
+			) : (
+				<p>No ha iniciado sesión</p>
+			)
+		}
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+</style>
+
+<script>
+	const { signOut } = await import("auth-astro/client")
+  const logout = document.getElementById("logout") as HTMLButtonElement
+	logout.onclick = () => signOut()
+</script>
