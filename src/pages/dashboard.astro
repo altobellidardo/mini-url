@@ -1,29 +1,73 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getSession } from 'auth-astro/server';
+import getUserId from '../utils/getUserId';
+import getLinks from '../utils/getLinks';
+import addLink from '../utils/addLink';
+
+if (Astro.request.method === 'POST') {
+	const form = await Astro.request.formData();
+	const url = form.get('url');
+	const id = form.get('id');
+
+	await addLink(id, url)
+
+	return Astro.redirect('/dashboard');
+}
 
 const session = await getSession(Astro.request);
+if (!session) return Astro.redirect('/');
 
-if (!session) {
-  return Astro.redirect('/');
-}
+const userId = await getUserId(session.user.email);
+if (!userId) return Astro.redirect('/');
+
+const links = await getLinks(userId);
 ---
 
 <Layout>
 	<main>
     <header>
 			<h1>Mini URL </h1>
-
-			<button id="logout">Cerrar sesión</button>
+			<div id="user-info">
+				<p>{session.user.name}</p>
+				<button id="logout">Cerrar sesión</button>
+			</div>
 		</header>
 
-		{
-			session ? (
-				<p>Bienvenido {session.user?.name}</p>
-			) : (
-				<p>No ha iniciado sesión</p>
-			)
-		}
+		<section>
+		</section>
+
+		<section>
+			<form method="post">
+				<label for="url">URL</label>
+				<input type="text" name="id" value={userId} hidden>
+				<input id="url" type="text" name="url" placeholder="https://example.com" />
+				<button type="submit">Crear</button>
+			</form>
+		</section>
+
+		<table>
+			<thead>
+				<tr>
+					<th>URL</th>
+					<th>Código</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					links.map((link) => (
+						<tr>
+							<td>
+								<a href={link.url} target="_blank" rel="noopener noreferrer">{link.url}</a>
+							</td>
+							<td>
+								<a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{link.code}</a>
+							</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
 	</main>
 </Layout>
 
@@ -36,6 +80,94 @@ if (!session) {
 		color: white;
 		font-size: 20px;
 		line-height: 1.6;
+	}
+
+	header button {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+		font-weight: bold;
+		cursor: pointer;
+		outline: none;
+		text-decoration: none;
+		line-height: normal;
+	}
+	header button:hover {
+		background-color: #4078c0;
+	}
+
+	header div#user-info {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	form {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+	
+	form label {
+		font-size: 1.1rem;
+	}
+
+	form input {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+	}
+
+	form input:focus {
+		outline: 2px solid #4078c0;
+	}
+
+	form button {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+	}
+	form button:hover {
+		background-color: #4078c0;
+		cursor: pointer;
+	}
+
+	table {
+		margin-top: 1rem;
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	table th, table td {
+		border: 1px solid #2b3137;
+		padding: .5rem;
+		text-align: center;
+	}
+
+	table th {
+		background-color: #2b3137;
+		color: white;
+	}
+
+	table td a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	table td a:hover {
+		text-decoration: underline;
+		color: #4078c0;
 	}
 </style>
 

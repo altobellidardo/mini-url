@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getSession } from 'auth-astro/server';
-const session = await getSession(Astro.request);
+import Github from '../icons/github.astro';
+import checkUser from '../utils/checkUser';
+const session = await checkUser(Astro.request);
+
 ---
 
 <Layout>
@@ -10,17 +12,25 @@ const session = await getSession(Astro.request);
 			<h1>Mini URL </h1>
 			{
 				session
-					? <button id="logout">Cerrar sesión</button>
-					: <button id="login">Iniciar sesión</button>
+					? (
+						<div id="user-info">
+							<p>{session.user?.name}</p>
+							<a href="/dashboard">Ir al panel</a>
+							<button id="logout">Cerrar sesión</button>
+						</div>
+					)
+					: (
+						<button id="login">
+							Iniciar sesión con GitHub
+							<Github />
+						</button>
+					)
 			}
 		</header>
 
 		<section>
-			<p>Acorta tus enlaces</p>
-			{session && (
-				<p>Bienvenido {session.user?.name}</p>
-				<a href="/dashboard">Ir al panel</a>
-			)}
+			<h2>Acorta tus enlaces</h2>
+			<p>Puedes convertir URLs largas en enlaces cortos y personalizados que redirigen a la misma dirección. Ya sea que estés compartiendo en redes sociales, enviando correos electrónicos o simplemente buscando simplificar tus enlaces, nuestro acortador de URL te ofrece la solución perfecta.</p>
 		</section>
 	</main>
 </Layout>
@@ -36,27 +46,40 @@ const session = await getSession(Astro.request);
 		line-height: 1.6;
 		font-family: system-ui, sans-serif;
 	}
-
-	header button {
+	
+	header button, header a {
 		border: none;
-		background-color: #7a95e0;
+		background-color: #2b3137;
+		color: white;
 		padding: .7rem 1rem;
 		border-radius: .5rem;
 		font-size: 1.1rem;
+		font-weight: bold;
 		cursor: pointer;
 		outline: none;
+		text-decoration: none;
+		line-height: normal;
 	}
-	header button:hover {
-		background-color: #5c73cc;
+	header button:hover, header a:hover {
+		background-color: #4078c0;
 	}
 
-	section a {
-		text-decoration: none;
-		color: white;
-		width: fit-content;
+	header button#login {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
 	}
-	section a:hover {
-		text-decoration: underline;
+
+	header div#user-info {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+</style>
+
+<style is:global>
+	header button#login:hover svg {
+		transform: scale(1.2);
 	}
 </style>
 
