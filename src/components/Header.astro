@@ -1,0 +1,75 @@
+---
+import Github from '../icons/github.astro';
+
+interface Props {
+  session: any;
+  index: boolean;
+}
+
+const { session, index } = Astro.props;
+---
+
+<header>
+  <h1>Mini URL </h1>
+  {
+    session
+      ? (
+        <div id="user-info">
+          <p>{session.user.name}</p>
+          {index && <a href="/dashboard">Ir al panel</a>}
+          <button id="logout">Cerrar sesión</button>
+        </div>
+      )
+      : (
+        <button id="login">
+          Iniciar sesión con GitHub
+          <Github />
+        </button>
+      )
+  }
+</header>
+
+<style>
+  header button, header a {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+		font-weight: bold;
+		cursor: pointer;
+		outline: none;
+		text-decoration: none;
+		line-height: normal;
+	}
+	header button:hover, header a:hover {
+		background-color: #4078c0;
+	}
+
+	header button#login {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	header div#user-info {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+</style>
+
+<style is:global>
+	header button#login:hover svg {
+		transform: scale(1.2);
+	}
+</style>
+
+<script>
+	const { signIn, signOut } = await import("auth-astro/client")
+	const login = document.querySelector("#login")
+	if (login instanceof HTMLButtonElement) login.onclick = () => signIn("github")
+	const logout = document.querySelector("#logout")
+	if (logout instanceof HTMLButtonElement) logout.onclick = () => signOut()
+</script>

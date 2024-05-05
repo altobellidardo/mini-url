@@ -1,0 +1,65 @@
+---
+const { links } = Astro.props
+const { origin } = Astro.url
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>Código</th>
+      <th>mini URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      links.map(link => (
+        <tr>
+          <td>
+            <a href={link.url} target="_blank" rel="noopener noreferrer">{link.url}</a>
+          </td>
+          <td>
+            <p>{link.code}</p>
+            {/* <a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{link.code}</a> */}
+          </td>
+          <td>
+            <a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{origin}/l/{link.code}</a>
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  table {
+		margin-top: 1rem;
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	table th, table td {
+		border: 1px solid #2b3137;
+		padding: .5rem;
+		text-align: center;
+	}
+
+	table th {
+		background-color: #2b3137;
+		color: white;
+	}
+
+  table td {
+    font-size: .9rem;
+  }
+
+	table td a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	table td a:hover {
+		text-decoration: underline;
+		color: #4078c0;
+	}
+</style>
