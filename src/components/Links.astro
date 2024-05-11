@@ -7,8 +7,8 @@ const { origin } = Astro.url
   <thead>
     <tr>
       <th>URL</th>
-      <th>Código</th>
       <th>mini URL</th>
+      <th>Options</th>
     </tr>
   </thead>
   <tbody>
@@ -19,17 +19,27 @@ const { origin } = Astro.url
             <a href={link.url} target="_blank" rel="noopener noreferrer">{link.url}</a>
           </td>
           <td>
-            <p>{link.code}</p>
-            {/* <a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{link.code}</a> */}
+            <a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{origin}/l/{link.code}</a>
           </td>
           <td>
-            <a href={`/l/${link.code}`} target="_blank" rel="noopener noreferrer">{origin}/l/{link.code}</a>
+            <button id="copy" data-code={link.code}>Copiar</button>
+            <a href={`/q/${link.code}`}>QR</a>
           </td>
         </tr>
       ))
     }
   </tbody>
 </table>
+
+<script>
+  const copy = document.querySelector("#copy")
+  copy.addEventListener("click", ({ target }) => {
+    const code = target.dataset.code
+    navigator.clipboard.writeText(code)
+    target.textContent = "Copiado!"
+    setTimeout(() => (target.textContent = "Copiar"), 2000)
+  })
+</script>
 
 <style>
   table {

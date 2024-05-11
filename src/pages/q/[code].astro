@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import getLink from '../../utils/getLink'
+
+const { code } = Astro.params;
+
+const link = await getLink(code);
+
+if (!link) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout>
+  <p style="display: none;" id="code">{code}</p>
+  <a href="/dashboard">Ir al panel</a>
+  <div id="qrcode"></div>
+</Layout>
+
+<script>
+  const code = document.querySelector("#code").textContent
+  const link = window.location.origin + "/l/" + code
+
+  const QRCode = await import("qrcode")
+  const qrcode = await QRCode.toString(link)
+
+  const qrElement = document.querySelector("#qrcode")
+  qrElement.innerHTML = qrcode
+</script>
+
+<style>
+  #qrcode {
+    max-width: 70vw;
+    margin: 20px auto;
+  }
+</style>
