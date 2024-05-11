@@ -30,6 +30,23 @@ const { session, index } = Astro.props;
 </header>
 
 <style>
+  header button, header a {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+		font-weight: bold;
+		cursor: pointer;
+		outline: none;
+		text-decoration: none;
+		line-height: normal;
+	}
+	header button:hover, header a:hover {
+		background-color: #4078c0;
+	}
+
 	header button#login {
 		display: flex;
 		align-items: center;

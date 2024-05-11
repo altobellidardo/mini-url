@@ -23,7 +23,7 @@ const { origin } = Astro.url
           </td>
           <td>
             <button id="copy" data-code={link.code}>Copiar</button>
-            <a href={`/q/${link.code}`}>QR</a>
+            <a href={`/q/${link.code}`} target="_blank" rel="noopener noreferrer">QR</a>
           </td>
         </tr>
       ))
@@ -48,28 +48,42 @@ const { origin } = Astro.url
 		border-collapse: collapse;
 	}
 
-	table th, table td {
+	th, td {
 		border: 1px solid #2b3137;
 		padding: .5rem;
 		text-align: center;
 	}
 
-	table th {
+	th {
 		background-color: #2b3137;
 		color: white;
 	}
 
-  table td {
-    font-size: .9rem;
+  td {
+    font-size: 1.1rem;
   }
 
-	table td a {
+	td a {
 		text-decoration: none;
 		color: inherit;
 	}
 
-	table td a:hover {
+	td a:hover, button:hover, td:last-child a:hover {
 		text-decoration: underline;
 		color: #4078c0;
+	}
+
+  button, td:last-child a {
+		border: none;
+		background-color: #2b3137;
+		color: white;
+		padding: .7rem 1rem;
+		border-radius: .5rem;
+		font-size: 1.1rem;
+		font-weight: bold;
+		cursor: pointer;
+		outline: none;
+		text-decoration: none;
+		line-height: normal;
 	}
 </style>
