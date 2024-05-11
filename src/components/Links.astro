@@ -35,7 +35,8 @@ const { origin } = Astro.url
   const copy = document.querySelector("#copy")
   copy.addEventListener("click", ({ target }) => {
     const code = target.dataset.code
-    navigator.clipboard.writeText(code)
+    const link = `${origin}/l/${code}`
+    navigator.clipboard.writeText(link)
     target.textContent = "Copiado!"
     setTimeout(() => (target.textContent = "Copiar"), 2000)
   })
